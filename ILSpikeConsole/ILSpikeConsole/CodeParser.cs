@@ -8,10 +8,12 @@ namespace ILCompilerConsole
         private string CodeFilePath { get; }
         private char Lookahead { get; set; }
         private TextReader CodeFileReader { get; set; }
+        private IILBuilder ILBuilder { get; }
 
         public CodeParser(string codeFilePath, IILBuilder ilBuider)
         {
             CodeFilePath = codeFilePath;
+            ILBuilder = ilBuider;
         }
 
         public void Initialise()
@@ -23,7 +25,7 @@ namespace ILCompilerConsole
         public void ParseCode()
         {
             InitParsing();
-
+            Expression();
 
             CodeFileReader.Close();
         }
@@ -34,6 +36,16 @@ namespace ILCompilerConsole
             GetChar();
         }
 
+        ///////////////////////////////////
+
+        private void Expression()
+        {
+            ILBuilder.EmitPushIntegerOnStack(GetNum());
+
+        }
+
+        ///////////////////////////////////
+
         private void Match(char x)
         {
             if (Lookahead == x)
@@ -41,8 +53,6 @@ namespace ILCompilerConsole
             else
                 Expected(string.Format("'{0}'", x));
         }
-
-        ///////////////////////////////////
 
         /// <summary>
         /// Get an identifier

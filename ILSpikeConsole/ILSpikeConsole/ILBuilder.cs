@@ -52,14 +52,15 @@ namespace ILCompilerConsole
 
         public void Initialise()
         {
-            Compiled = false;
-
-            GenerateMainMethod();
-            DummyType = DummyTypeBuilder.CreateType();
+            Compiled = false;                    
         }
 
         public void GenerateExecutable()
         {
+            GenerateMainMethod();
+
+            DummyType = DummyTypeBuilder.CreateType();
+
             ThisAssemblyBuilder.SetEntryPoint(MainMethodBuilder, PEFileKinds.ConsoleApplication);
             ThisAssemblyBuilder.Save(ExecutableFileName);
 
@@ -68,8 +69,8 @@ namespace ILCompilerConsole
 
         private void GenerateMainMethod()
         {
-            //EmitHelloWorld();
-
+            EmitDiagnosticOutput(typeof(int));
+            
             MainMethodILGenerator.Emit(OpCodes.Ldc_I4_0);
             MainMethodILGenerator.Emit(OpCodes.Ret);            
         }
@@ -81,7 +82,22 @@ namespace ILCompilerConsole
                 typeof(Console).GetMethod("WriteLine", new Type[] { typeof(string) }));
         }
 
-        /////////////////////////////////////
+        private void EmitDiagnosticOutput(Type type)
+        {            
+            MainMethodILGenerator.Emit(OpCodes.Call,
+                typeof(Console).GetMethod("WriteLine", new Type[] { type }));
+        }
 
+        /////////////////////////////////////
+        public void EmitPushIntegerOnStack(char charNum)
+        {
+            int intNum = (int) Char.GetNumericValue(charNum);
+            MainMethodILGenerator.Emit(OpCodes.Ldc_I4, intNum);
+        }
+
+        public void EmitAdd()
+        {
+            MainMethodILGenerator.Emit(OpCodes.Add);
+        }
     }
 }

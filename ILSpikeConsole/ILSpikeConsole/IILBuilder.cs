@@ -8,5 +8,8 @@ namespace ILCompilerConsole
 
         void Initialise();
         void GenerateExecutable();
+
+        void EmitPushIntegerOnStack(char num);
+        void EmitAdd();
     }
 }
